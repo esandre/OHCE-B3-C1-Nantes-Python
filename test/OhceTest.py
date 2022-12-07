@@ -1,8 +1,6 @@
 import unittest
 
-import parameterized as parameterized
-
-from Ohce import Ohce
+from utilities.OhceBuilder import OhceBuilder
 
 
 class OhceTest(unittest.TestCase):
@@ -10,7 +8,7 @@ class OhceTest(unittest.TestCase):
         chaîne = "toto"
 
         # QUAND on saisit une chaîne
-        ohce = Ohce()
+        ohce = OhceBuilder.default()
         resultat = ohce.palindrome(chaîne)
 
         # ALORS celle-ci est renvoyée en miroir
@@ -20,7 +18,7 @@ class OhceTest(unittest.TestCase):
         palindrome = "radar"
 
         # QUAND on saisit un palindrome
-        ohce = Ohce()
+        ohce = OhceBuilder.default()
         resultat = ohce.palindrome(palindrome)
 
         # ALORS celui-ci est renvoyé
@@ -32,24 +30,33 @@ class OhceTest(unittest.TestCase):
 
     def test_non_palindrome(self):
         # QUAND on saisit une chaîne n'étant pas un palindrome
-        ohce = Ohce()
+        ohce = OhceBuilder.default()
         resultat = ohce.palindrome("toto")
 
         # ALORS 'Bien dit' n'apparaît pas
         self.assertNotIn("Bien dit", resultat)
 
-    def test_bonjour(self):
+    def test_bonjour_gb(self):
+        self.__test_bonjour("Hello")
+
+    def test_bonjour_fr(self):
+        self.__test_bonjour("Bonjour")
+
+    def __test_bonjour(self, maniere_de_dire_bonjour):
+        # ETANT DONNE un utilisateur disant bonjour d'une certaine manière
+        ohce = OhceBuilder()\
+            .ayant_pour_maniere_de_dire_bonjour(maniere_de_dire_bonjour)\
+            .build()
+
         # QUAND on saisit une chaîne
-        ohce = Ohce()
         resultat = ohce.palindrome("test")
 
-        # ALORS "Bonjour" est envoyé avant toute réponse
-        bonjour = "Bonjour"
-        self.assertEqual(bonjour, resultat[0:len(bonjour)])
+        # ALORS "Hello" est envoyé avant toute réponse
+        self.assertEqual(maniere_de_dire_bonjour, resultat[0:len(maniere_de_dire_bonjour)])
 
     def test_au_revoir(self):
         # QUAND on saisit une chaîne
-        ohce = Ohce()
+        ohce = OhceBuilder.default()
         resultat = ohce.palindrome("test")
 
         # ALORS "Au revoir" est envoyé a la fin
