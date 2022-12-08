@@ -1,3 +1,4 @@
+import parameterized.parameterized
 import unittest
 
 from Langues.Constantes import Constantes
@@ -40,17 +41,21 @@ class OhceTest(unittest.TestCase):
         # ALORS 'Bien dit' n'apparaît pas
         self.assertNotIn("Bien dit", resultat)
 
-    def test_bonjour_gb_default(self):
-        self.__test_bonjour(LangueAnglaise(), PeriodeDeLaJournee.DEFAULT, Constantes.Anglais.HELLO)
-
-    def test_bonjour_gb_soir(self):
-        self.__test_bonjour(LangueAnglaise(), PeriodeDeLaJournee.SOIR, Constantes.Anglais.GOOD_EVENING)
-
-    def test_bonjour_fr_default(self):
-        self.__test_bonjour(LangueFrancaise(), PeriodeDeLaJournee.DEFAULT, Constantes.Francais.BONJOUR)
-
-    def __test_bonjour(self, langue, periode_journee, attendu):
-        # ETANT DONNE un utilisateur disant bonjour d'une certaine manière
+    @parameterized.parameterized.expand(
+        [
+            [LangueAnglaise(), PeriodeDeLaJournee.DEFAULT, Constantes.Anglais.HELLO],
+            [LangueAnglaise(), PeriodeDeLaJournee.SOIR, Constantes.Anglais.GOOD_EVENING],
+            [LangueFrancaise(), PeriodeDeLaJournee.DEFAULT, Constantes.Francais.BONJOUR],
+        ],
+        lambda _, __, args:
+            "test ETANT DONNE un utilisateur disant bonjour dans une langue %s \n"
+            "ET que la période de la journée est %s \n"
+            "QUAND on saisit une chaîne \n"
+            "ALORS la salutation %s est envoyée avant toute réponse"
+            %(str(type(args.args[0]).__name__), str(type(args.args[1]).__name__), args.args[2])
+    )
+    def test_bonjour(self, langue, periode_journee, attendu):
+        # ETANT DONNE un utilisateur disant bonjour dans une langue <langue>
         # ET que la période de la journée est <periode_journee>
         ohce = OhceBuilder()\
             .ayant_pour_langue(langue)\
