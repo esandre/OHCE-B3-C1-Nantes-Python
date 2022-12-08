@@ -8,3 +8,6 @@ class LangueAnglaise:
         return Constantes.Anglais.GOOD_EVENING \
             if periode_journee == PeriodeDeLaJournee.SOIR \
             else Constantes.Anglais.HELLO
+
+    def bien_dit(self):
+        return Constantes.Anglais.WELL_DONE
