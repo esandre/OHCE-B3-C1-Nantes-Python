@@ -4,6 +4,7 @@ import parameterized.parameterized
 from Langues.Constantes import Constantes
 from Langues.LangueAnglaise import LangueAnglaise
 from Langues.LangueFrancaise import LangueFrancaise
+from utilities.LangueSpy import LangueSpy
 from utilities.OhceBuilder import OhceBuilder
 
 
@@ -40,22 +41,15 @@ class PalindromeTest(unittest.TestCase):
         resultat_apres_palindrome = resultat[len(palindrome):len(resultat)]
         self.assertIn(bien_dit, resultat_apres_palindrome)
 
-    @parameterized.parameterized.expand([
-        [LangueAnglaise(), Constantes.Anglais.WELL_DONE],
-        [LangueFrancaise(), Constantes.Francais.BIEN_DIT],
-    ],
-        lambda _, __, args:
-        "test ETANT DONNE un utilisateur parlant la langue %s \n"
-        "QUAND on saisit une chaîne n'étant pas un palindrome \n"
-        "ALORS %s n'apparaît pas"
-        % (str(type(args.args[0]).__name__), args.args[1])
-    )
-    def test_non_palindrome(self, langue, bien_dit):
-        ohce = OhceBuilder().ayant_pour_langue(langue).build()
+    def test_non_palindrome(self):
+        spy_langue = LangueSpy()
+        ohce = OhceBuilder()\
+            .ayant_pour_langue(spy_langue)\
+            .build()
 
-        resultat = ohce.palindrome("toto")
+        ohce.palindrome("toto")
 
-        self.assertNotIn(bien_dit, resultat)
+        self.assertEqual(0, spy_langue.nombre_appels_a_bien_dit)
 
 
 if __name__ == '__main__':

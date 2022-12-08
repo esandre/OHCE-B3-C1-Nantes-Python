@@ -1,5 +1,4 @@
 import locale
-import sys
 
 from Langues.LangueAnglaise import LangueAnglaise
 from Langues.LangueFrancaise import LangueFrancaise
